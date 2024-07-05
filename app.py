@@ -5,10 +5,9 @@ import numpy as np
 from sklearn.preprocessing import LabelEncoder
 
 # Load pre-trained models
-# rfr_model = joblib.load("rfr_model.pkl")
 rfr_model = joblib.load("model_rfr_before_tuning.pkl")
-# gbm_model = joblib.load("gbm_model.pkl")
 gbm_model = joblib.load("model_gbm_before_tuning.pkl")
+
 # Load label encoders for categorical features
 categorical_features = ['tanggal', 'shift', 'jam', 'plant_model', 'material', 'alat_muat', 'no_hauler', 'disposal']
 label_encoders = {column: joblib.load(f"le_{column}.pkl") for column in categorical_features}
@@ -68,14 +67,8 @@ def safe_transform(encoder, value):
 for column in categorical_features:
     input_data[column] = input_data[column].apply(lambda x: safe_transform(label_encoders[column], x))
 
-# # Display unique values for date encoder for debugging
-# st.write("Unique values for date encoder:", label_encoders['tanggal'].classes_)
-
 # Display encoded input data for debugging
 st.write("Input data encoded:", input_data)
-
-# Compare with the training data
-st.write("First few rows of the training data:", dataset.head())
 
 def predict_rf(input_data):
     prediction = rfr_model.predict(input_data)
