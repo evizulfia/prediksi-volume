@@ -5,14 +5,14 @@ import numpy as np
 from sklearn.preprocessing import LabelEncoder
 
 # Load pre-trained models
-rfr_model = joblib.load("model_rfr_before_tuning.pkl")
-gbm_model = joblib.load("model_gbm_before_tuning.pkl")
+rfr_model = joblib.load("model_rfr_bt.pkl")
+gbm_model = joblib.load("model_gbm_bt.pkl")
 
 # Load label encoders for categorical features
-categorical_features = ['tanggal', 'shift', 'jam', 'plant_model', 'material', 'alat_muat', 'no_hauler', 'disposal']
+categorical_features = [ 'shift', 'jam', 'plant_model', 'material', 'alat_muat', 'no_hauler', 'disposal']
 label_encoders = {column: joblib.load(f"le_{column}.pkl") for column in categorical_features}
 
-# Load your dataset to get unique values for selectboxes
+# Load dataset to get unique values for selectboxes
 dataset = pd.read_excel("produksi_tanah_liat.xlsx")
 
 # Convert date column to string without time
@@ -25,7 +25,7 @@ def get_unique_values(column_name):
 st.title("Prediksi Volume Produksi Pertambangan Tanah Liat")
 
 # Input features with unique values from dataset
-tanggal = st.selectbox("Masukkan tanggal", get_unique_values('tanggal'))
+# tanggal = st.selectbox("Masukkan tanggal", get_unique_values('tanggal'))
 shift = st.selectbox("Pilih shift", get_unique_values('shift'))
 jam = st.selectbox("Masukkan jam", get_unique_values('jam'))
 plant_model = st.selectbox("Pilih plant model", get_unique_values('plant_model'))
@@ -39,7 +39,7 @@ disposal = st.selectbox("Pilih disposal", get_unique_values('disposal'))
 
 # Encode the categorical inputs
 input_data = pd.DataFrame({
-    'tanggal': [tanggal],
+    # 'tanggal': [tanggal],
     'shift': [shift],
     'jam': [jam],
     'plant_model': [plant_model],
@@ -68,7 +68,7 @@ for column in categorical_features:
     input_data[column] = input_data[column].apply(lambda x: safe_transform(label_encoders[column], x))
 
 # Display encoded input data for debugging
-st.write("Input data encoded:", input_data)
+# st.write("Input data encoded:", input_data)
 
 def predict_rf(input_data):
     prediction = rfr_model.predict(input_data)
